@@ -18,7 +18,7 @@ pipeline {
 
     stage('Build') {
       steps {
-          sh 'docker build -t python_app:latest .'
+          sh 'docker build -t python_app:latest .' 
       }
     }
   }
