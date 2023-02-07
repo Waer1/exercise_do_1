@@ -15,7 +15,7 @@ services:
       - webserver
 
   python_app:
-    image: python_app
+    image: python_app:stable
     networks:
       - webserver
 
