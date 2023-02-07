@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello():
-    return 'Hello, Botit!'
+    return 'Hello, Botittt!'
 
 @app.route('/<page_name>')
 def other_page(page_name):
