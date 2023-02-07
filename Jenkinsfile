@@ -11,7 +11,6 @@ pipeline {
       }
 
       steps {
-        sh 'npm i'
         sh 'python /app/tests/test_hello.py'
       }
     }
