@@ -11,7 +11,7 @@ pipeline {
       }
 
       steps {
-        sh 'python /app/tests/test_hello.py'
+        sh 'python ./tests/test_hello.py'
       }
     }
 
