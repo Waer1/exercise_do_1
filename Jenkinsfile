@@ -104,14 +104,14 @@ pipeline {
 
   	post {
 
-		  always {
-            sh 'docker container prune -f'
-            sh 'docker system prune -a -f'
-      }
-
       failure{
         sh 'docker image rm python_app:testing'
       }
+
+      always {
+            sh 'docker system prune -a -f'
+      }
+
 
 	}
 
