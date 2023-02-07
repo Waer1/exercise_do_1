@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  web_server:
+    image: nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - python_app
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - webserver
+
+  python_app:
+    image: python_app
+    networks:
+      - webserver
+
+
+networks:
+  webserver:
