@@ -12,15 +12,8 @@
   - name: copying deploment files
     become: true 
     copy:
-      src: ../../
-      dest: /Botit/deployment/
-
-  - name: check permission of docker socke
-    ansible.builtin.file:
-      path: /var/run/docker.sock
-      owner: "root"
-      group: "root"
-      mode: '0666'
+      src: ../deployment
+      dest: /Botit/
 
   - name: Creates directory for certification
     file:
@@ -37,10 +30,9 @@
       path: /Botit/certbot/conf
       state: directory
 
-
   - name: deploy Docker Compose stack
     community.docker.docker_compose:
       project_src: /Botit/deployment/
       files:
-      - docker-compose.yaml
+      - docker-compose.yml
       pull : yes
