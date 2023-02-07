@@ -1,0 +1,46 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+
+
+  - name: Creates Base path for the deployment
+    file:
+      path: /Botit
+      state: directory
+
+  - name: copying deploment files
+    become: true 
+    copy:
+      src: ../../
+      dest: /Botit/deployment/
+
+  - name: check permission of docker socke
+    ansible.builtin.file:
+      path: /var/run/docker.sock
+      owner: "root"
+      group: "root"
+      mode: '0666'
+
+  - name: Creates directory for certification
+    file:
+      path: /Botit/certbot
+      state: directory
+
+  - name: Creates directory for certification www
+    file:
+      path: /Botit/certbot/www
+      state: directory
+
+  - name: Creates directory for certification conf
+    file:
+      path: /Botit/certbot/conf
+      state: directory
+
+
+  - name: deploy Docker Compose stack
+    community.docker.docker_compose:
+      project_src: /Botit/deployment/
+      files:
+      - docker-compose.yaml
+      pull : yes

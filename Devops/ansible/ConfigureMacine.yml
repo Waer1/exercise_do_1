@@ -1,0 +1,109 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+    - name: Add Docker Group
+      group: name=docker state=present
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Upgrade all packages
+      apt: upgrade=dist
+
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+
+    - name: Add remote "azureuser" user to "docker" group
+      user:
+        name: azureuser
+        groups: docker
+        append: yes
+
+    - name: Install Docker compose
+      pip:
+        name: docker-compose
+
+    - name: Ensure jenkins directory on docker host
+      file:
+        state: directory
+        owner: "1000"
+        group: "1000"
+        path: /share/jenkins
+
+    - name: Creates directory for Jenkins file
+      file:
+        path: /Botit/Jenkins
+        state: directory
+
+    - name: copy jenkins image
+      become: true
+      copy:
+        src: ../deployment/JenkinsDockerfile
+        dest: /Botit/Jenkins/Dockerfile
+        owner: root
+        group: root
+        mode: "0644"
+
+
+    - name: build docker_jenkins image
+      docker_image:
+        build:
+          path: /Botit/Jenkins
+        name: docker_jenkins
+        tag: v1
+        source: build
+
+
+    - name: check permission of docker socke
+      ansible.builtin.file:
+        path: /var/run/docker.sock
+        owner: "root"
+        group: "root"
+        mode: "0666"
+
+    - name: Create Docker Jenkins Container
+      docker_container:
+        name: jenkins
+        image: docker_jenkins:v1
+        ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - "jenkins_home:/var/jenkins_home"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          - "/Botit:/Botit"
+          - "/Botit-testing:/Botit-testing"
+          - /usr/bin/docker:/usr/bin/docker
+        state: started
+        restart_policy: always

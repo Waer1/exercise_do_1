@@ -1,0 +1,23 @@
+- hosts: all
+  become: true
+  become_user: root
+  tasks:
+
+  - name: copying monitoring files
+    become: true 
+    copy:
+      src: ../monitoring/
+      dest: /Botit/Monitoring
+
+  - name: Change file ownership, group and permissions
+    command: sudo chown -R  65534 /Botit/Monitoring/data/prometheus/
+
+  - name: Change file ownership, group and permissions
+    command: sudo chown -R  472 /Botit/Monitoring/data/grafana/
+  
+  - name: deploy Docker Compose stack
+    docker_compose:
+      project_src: /Botit/Monitoring/
+      files:
+      - docker-compose.yml
+      pull : yes
