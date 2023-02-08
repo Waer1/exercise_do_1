@@ -131,7 +131,4 @@ docs/
 
 
 *.pem
-
-
-        Optimizing the production line by 11 minutes per electric cellOptimizing the production line by 11 minutes per electric cell
-
+*.env

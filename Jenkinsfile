@@ -108,10 +108,9 @@ pipeline {
         sh 'docker image rm python_app:testing'
       }
 
-      always {
-            sh 'docker system prune -a -f'
-      }
-
+      // always {
+      //       sh 'docker system prune -a -f'
+      // }
 
 	}
 
